@@ -1,0 +1,18 @@
+# Binarios compilados
+*.exe
+*.out
+*.o
+
+# Carpeta vendor (dependencias externas)
+vendor/
+bin/
+tmp/
+
+# Archivos de configuración sensibles
+.env
+config.json
+
+# Archivos del sistema o del editor
+.DS_Store
+.idea/
+.vscode/
