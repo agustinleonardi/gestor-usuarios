@@ -5,8 +5,7 @@ import (
 	"time"
 
 	"github.com/agustinleonardi/gestor-usuarios/internal/ports"
-	"github.com/golang-jwt/jwt"
-
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,9 +25,8 @@ func (s *BcryptAuthService) HashPassword(password string) (string, error) {
 }
 
 // Verificar contraseña ingresada contra hash guardado
-func (s *BcryptAuthService) CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+func (s *BcryptAuthService) CheckPassword(password, hash string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
 func (s *BcryptAuthService) GenerateToken(userID int) (string, error) {

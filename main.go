@@ -2,16 +2,17 @@ package main
 
 import (
 	"log"
-	"os/user"
 
 	"github.com/agustinleonardi/gestor-usuarios/internal/adapters/auth"
 	"github.com/agustinleonardi/gestor-usuarios/internal/adapters/db"
 	"github.com/agustinleonardi/gestor-usuarios/internal/adapters/http/handlers"
-	"github.com/agustinleonardi/gestor-usuarios/internal/app"
+	"github.com/agustinleonardi/gestor-usuarios/internal/adapters/http/middleware"
+	app "github.com/agustinleonardi/gestor-usuarios/internal/app/usuario"
 	"github.com/agustinleonardi/gestor-usuarios/internal/domain"
 	"github.com/agustinleonardi/gestor-usuarios/internal/domain/permission"
 	"github.com/agustinleonardi/gestor-usuarios/internal/domain/role"
 	"github.com/agustinleonardi/gestor-usuarios/internal/domain/token"
+	"github.com/agustinleonardi/gestor-usuarios/internal/domain/user"
 	"github.com/gin-gonic/gin"
 
 	"gorm.io/driver/mysql"
@@ -41,12 +42,21 @@ func main() {
 
 	//handlers
 	userHandler := handlers.NewUserHandler(userUseCase)
+	authHandler := handlers.NewAuthHandler(userUseCase)
 
 	//middleware
 
 	// Router
 	r := gin.New()
-	r.POST("/register", userHandler.Register)
+	userGroup := r.Group("users")
+	authGroup := r.Group("auth")
+	{
+		authGroup.POST("/login", authHandler.Login)
+		authGroup.GET("/me", middleware.JWTMiddleware(authService, userRepo), authHandler.Me)
+	}
+
+	userGroup.POST("/register", userHandler.Register)
+	userGroup.GET("/", userHandler.ListUsers)
 
 	// Iniciar servidor
 	r.Run(":8081")

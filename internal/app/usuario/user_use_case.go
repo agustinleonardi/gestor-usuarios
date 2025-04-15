@@ -44,3 +44,21 @@ func (s *UserUseCase) Register(name, email, password string) error {
 func (s *UserUseCase) List() ([]*user.User, error) {
 	return s.repo.List()
 }
+func (s *UserUseCase) Login(email, password string) (string, error) {
+	user, err := s.repo.GetByEmail(email)
+	if err != nil {
+		return "", err
+	}
+	if user == nil {
+		return "", errors.New("credenciales invalidas")
+	}
+	if err := s.authService.CheckPassword(password, user.Password); err != nil {
+		return "", errors.New("credenciales invalidas")
+	}
+	token, err := s.authService.GenerateToken(user.ID)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+}

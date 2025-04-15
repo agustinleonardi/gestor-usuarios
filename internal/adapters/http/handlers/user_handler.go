@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/agustinleonardi/gestor-usuarios/internal/app"
+	app "github.com/agustinleonardi/gestor-usuarios/internal/app/usuario"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,6 +43,5 @@ func (h *UserHandler) ListUsers(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "No se pudieron obtener los usuarios"})
 		return
 	}
-
 	c.JSON(http.StatusOK, users)
 }

@@ -10,7 +10,7 @@ import (
 type User struct {
 	ID        int       `gorm:"primaryKey"`
 	Name      string    `gorm:"not null"`
-	Email     string    //`gorm:"unique;not null"`
+	Email     string    `gorm:"type:varchar(100);unique"`
 	Password  string    `gorm:"not null"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 
