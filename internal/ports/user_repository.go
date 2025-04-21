@@ -1,6 +1,7 @@
 package ports
 
 import (
+	"github.com/agustinleonardi/gestor-usuarios/internal/domain/role"
 	"github.com/agustinleonardi/gestor-usuarios/internal/domain/user"
 )
 
@@ -11,4 +12,6 @@ type UserRepository interface {
 	Update(user *user.User) error
 	Delete(id int) error
 	List() ([]*user.User, error)
+	CreateRole(role *role.Role) error
+	GetRoleByName(name string) (*role.Role, error)
 }

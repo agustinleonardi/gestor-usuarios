@@ -1,6 +1,9 @@
 package db
 
 import (
+	"errors"
+
+	"github.com/agustinleonardi/gestor-usuarios/internal/domain/role"
 	"github.com/agustinleonardi/gestor-usuarios/internal/domain/user"
 	"github.com/agustinleonardi/gestor-usuarios/internal/ports"
 	"gorm.io/gorm"
@@ -54,4 +57,19 @@ func (r *GormUserRepository) List() ([]*user.User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+func (r *GormUserRepository) CreateRole(role *role.Role) error {
+	return r.db.Create(role).Error
+}
+
+func (r *GormUserRepository) GetRoleByName(name string) (*role.Role, error) {
+	var rData role.Role
+	err := r.db.Where("name = ?", name).First(&rData).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &rData, nil
 }

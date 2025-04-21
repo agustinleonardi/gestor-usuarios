@@ -45,3 +45,21 @@ func (h *UserHandler) ListUsers(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, users)
 }
+
+func (h *UserHandler) CreateRole(c *gin.Context) {
+	var req struct {
+		Name string `json:"name"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil || req.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nombre inválido"})
+		return
+	}
+
+	if err := h.userUseCase.CreateRole(req.Name); err != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": "Rol creado exitosamente"})
+}

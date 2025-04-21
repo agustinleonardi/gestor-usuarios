@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/agustinleonardi/gestor-usuarios/internal/domain/role"
 	"github.com/agustinleonardi/gestor-usuarios/internal/domain/user"
 	"github.com/agustinleonardi/gestor-usuarios/internal/ports"
 )
@@ -61,4 +62,19 @@ func (s *UserUseCase) Login(email, password string) (string, error) {
 	}
 
 	return token, nil
+}
+func (uc *UserUseCase) CreateRole(name string) error {
+	// Validar si ya existe
+	existing, err := uc.repo.GetRoleByName(name)
+	if err != nil {
+		return err
+	}
+	if existing != nil {
+		return errors.New("el rol ya existe")
+	}
+
+	role := &role.Role{
+		Name: name,
+	}
+	return uc.repo.CreateRole(role)
 }

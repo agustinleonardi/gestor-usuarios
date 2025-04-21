@@ -48,15 +48,18 @@ func main() {
 
 	// Router
 	r := gin.New()
-	userGroup := r.Group("users")
+
 	authGroup := r.Group("auth")
 	{
 		authGroup.POST("/login", authHandler.Login)
 		authGroup.GET("/me", middleware.JWTMiddleware(authService, userRepo), authHandler.Me)
 	}
-
-	userGroup.POST("/register", userHandler.Register)
-	userGroup.GET("/", userHandler.ListUsers)
+	userGroup := r.Group("users")
+	{
+		userGroup.POST("/register", userHandler.Register)
+		userGroup.GET("/", userHandler.ListUsers)
+		userGroup.POST("/roles", userHandler.CreateRole)
+	}
 
 	// Iniciar servidor
 	r.Run(":8081")
